@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, HttpCode, Param, } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpCode, ValidationPipe, HttpStatus, } from '@nestjs/common';
 
 
 import { LoginRequestDto } from './dto/login-request.dto';
@@ -12,24 +12,26 @@ export class AuthController {
     constructor(private readonly authService: AuthService) { }
     @Post('login')
     @HttpCode(200)
-    async login(@Body() requestDto: LoginRequestDto): Promise<CommonResposneDto<AuthResponseDto>> {
+    async login(@Body(new ValidationPipe()) requestDto: LoginRequestDto): Promise<CommonResposneDto<AuthResponseDto>> {
         try {
             const result = await this.authService.login(requestDto);
             return success(result);
         } catch (error) {
-            return failure(error);
+            console.log(error);
+            return failure(error, error.statusCode | HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Post('signup')
     @HttpCode(201)
-    async signup(@Body() requestDto: SignupRequestDto): Promise<CommonResposneDto<AuthResponseDto>> {
+    async signup(@Body(new ValidationPipe()) requestDto: SignupRequestDto): Promise<CommonResposneDto<AuthResponseDto>> {
         try {
             const result = await this.authService.signup(requestDto);
             return success(result);
 
-        } catch (error) {
-            return failure(error);
+        }
+        catch (error) {
+            return failure(error, error.statusCode | HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 

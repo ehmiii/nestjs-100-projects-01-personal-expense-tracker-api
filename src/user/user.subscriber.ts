@@ -1,21 +1,21 @@
 import { EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent } from "typeorm";
 import * as bcrypt from 'bcrypt';
-import { User } from './user.entity';
+import { Users } from './users.entity';
 
 @EventSubscriber()
-export class UserSubscriber implements EntitySubscriberInterface<User> {
+export class UserSubscriber implements EntitySubscriberInterface<Users> {
     listenTo() {
-        return User;
+        return Users;
     }
 
-    async beforeInsert(event: InsertEvent<User>) {
+    async beforeInsert(event: InsertEvent<Users>) {
         console.log(`BEFORE USER INSERTED: `, event.entity);
         // Convert password to hash
         event.entity.password = await bcrypt.hash(event.entity.password, 12);
 
     }
 
-    async beforeUpdate(event: UpdateEvent<User>) {
+    async beforeUpdate(event: UpdateEvent<Users>) {
         console.log(`BEFORE USER UPDATED: `, event.entity);
         const newPassword = event.entity?.password;
         const oldPassword = event.databaseEntity?.password;

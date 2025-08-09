@@ -1,11 +1,11 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 
 import { UserDto } from '../user/dto/user.dto';
-import { User } from '../user/user.entity';
+import { Users } from '../user/users.entity';
 import { LoginRequestDto } from './dto/login-request.dto';
 import { SignupRequestDto } from './dto/sign-up-request.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
@@ -28,12 +28,13 @@ export class AuthService {
     async validateCredentials(requestDto: LoginRequestDto): Promise<UserDto> {
         const user = await this.userService.getUserByEmail(requestDto.email);
         if (!user) {
-            throw new Error('Invalid credentials');
+            throw new UnauthorizedException('Invalid credentials');
         }
+
         // Password validation logic would go here
         const isValidPassword = await bcrypt.compare(requestDto.password, user.password);
         if (!isValidPassword) {
-            throw new Error('Invalid credentials');
+            throw new UnauthorizedException('Invalid credentials');
         }
 
         return plainToInstance(UserDto, user);
@@ -43,17 +44,14 @@ export class AuthService {
 
         try {
             const userDto = await this.validateCredentials(requestDto);
+            console.log(`User data ${userDto}`);
             const authToken = await this.generateAuthToken(userDto);
             return plainToInstance(AuthResponseDto, {
                 authToken,
                 user: userDto
             });
         } catch (error) {
-
             throw error; // Re-throw the error to be handled by the caller
-
-        } finally {
-
         }
     }
 
@@ -64,7 +62,7 @@ export class AuthService {
             if (userDto) {
                 throw new BadRequestException(`User already exists with email ${requestDto.email}`);
             }
-            const userRepository = await this.dataSource.getRepository(User);
+            const userRepository = this.dataSource.getRepository(Users);
             const newUser = userRepository.create();
 
             newUser.email = requestDto.email;
@@ -77,7 +75,8 @@ export class AuthService {
             const authToken = await this.generateAuthToken(createdUserDto);
             return plainToInstance(AuthResponseDto, {
                 authToken,
-                user: userDto
+                user: createdUserDto,
+
             },
             );
         } catch (error) {

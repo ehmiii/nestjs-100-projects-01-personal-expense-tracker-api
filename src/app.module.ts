@@ -8,6 +8,9 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ExpensesModule } from './expenses/expenses.module';
 import { Constants } from './common/constants';
+import { Expense } from './expenses/expens.entity';
+import { Users } from './user/users.entity';
+import { UserSubscriber } from './user/user.subscriber';
 
 @Module({
   imports: [
@@ -20,7 +23,11 @@ import { Constants } from './common/constants';
         inject: [ConfigService],
         useFactory: (configService: ConfigService) => ({
           type: 'postgres',
-          url: configService.get<string>(Constants.DATABASE_URL)
+          url: configService.get<string>(Constants.DATABASE_URL),
+          entities: [Users, Expense],
+          subscribers: [UserSubscriber],
+          autoLoadEntities: true,
+          synchronize: true,
         })
       }
     ),

@@ -7,6 +7,7 @@ import { Constants } from '../common/constants';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
+import { UserSubscriber } from '../user/user.subscriber';
 
 
 @Module({
@@ -22,6 +23,6 @@ import { UserService } from '../user/user.service';
 
     ],
     controllers: [AuthController],
-    providers: [AuthService, UserService],
+    providers: [AuthService, UserService, UserSubscriber],
 })
 export class AuthModule { }

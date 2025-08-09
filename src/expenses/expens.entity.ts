@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, } from 'typeorm';
 
 import { Category } from './expens.enum';
-import { User } from '../user/user.entity';
+import { Users } from '../user/users.entity';
 
 @Entity()
 export class Expense {
@@ -29,6 +29,6 @@ export class Expense {
     })
     category: Category;
 
-    @ManyToOne(() => User, (user) => user.expenses,)
-    user: User;
+    @ManyToOne(() => Users, (user) => user.expenses,)
+    user: Users;
 }
