@@ -8,6 +8,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { UserSubscriber } from '../user/user.subscriber';
+import { UserModule } from 'src/user/user.module';
 
 
 @Module({
@@ -20,9 +21,9 @@ import { UserSubscriber } from '../user/user.subscriber';
             }),
             inject: [ConfigService]
         }),
-
+        UserModule,
     ],
     controllers: [AuthController],
-    providers: [AuthService, UserService, UserSubscriber],
+    providers: [AuthService,],
 })
 export class AuthModule { }

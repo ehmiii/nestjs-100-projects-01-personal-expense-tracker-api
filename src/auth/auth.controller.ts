@@ -1,18 +1,18 @@
-import { Controller, Get, Post, Body, HttpCode, ValidationPipe, HttpStatus, } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpCode, HttpStatus, } from '@nestjs/common';
 
 
 import { LoginRequestDto } from './dto/login-request.dto';
-import { SignupRequestDto } from './dto/sign-up-request.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { AuthService } from './auth.service';
 import { CommonResposneDto } from 'src/common/dto/response.dto';
 import { success, failure } from '../utils/response.util';
+import { CreateUserDto } from 'src/user/dto/create.user.dto';
 @Controller('api/v1/auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) { }
     @Post('login')
     @HttpCode(200)
-    async login(@Body(new ValidationPipe()) requestDto: LoginRequestDto): Promise<CommonResposneDto<AuthResponseDto>> {
+    async login(@Body() requestDto: LoginRequestDto): Promise<CommonResposneDto<AuthResponseDto>> {
         try {
             const result = await this.authService.login(requestDto);
             return success(result);
@@ -24,9 +24,9 @@ export class AuthController {
 
     @Post('signup')
     @HttpCode(201)
-    async signup(@Body(new ValidationPipe()) requestDto: SignupRequestDto): Promise<CommonResposneDto<AuthResponseDto>> {
+    async signup(@Body() createUserDto: CreateUserDto): Promise<CommonResposneDto<AuthResponseDto>> {
         try {
-            const result = await this.authService.signup(requestDto);
+            const result = await this.authService.signup(createUserDto);
             return success(result);
 
         }

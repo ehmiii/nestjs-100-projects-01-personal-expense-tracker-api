@@ -7,9 +7,9 @@ import { plainToInstance } from 'class-transformer';
 import { UserDto } from '../user/dto/user.dto';
 import { Users } from '../user/users.entity';
 import { LoginRequestDto } from './dto/login-request.dto';
-import { SignupRequestDto } from './dto/sign-up-request.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { UserService } from '../user/user.service';
+import { CreateUserDto } from 'src/user/dto/create.user.dto';
 @Injectable()
 export class AuthService {
     constructor(
@@ -46,36 +46,29 @@ export class AuthService {
             const userDto = await this.validateCredentials(requestDto);
             console.log(`User data ${userDto}`);
             const authToken = await this.generateAuthToken(userDto);
-            return plainToInstance(AuthResponseDto, {
-                authToken,
-                user: userDto
-            });
+            return plainToInstance(AuthResponseDto,
+                {
+                    authToken,
+                    user: userDto
+                },
+                {
+                    excludeExtraneousValues: true,
+                }
+            );
         } catch (error) {
             throw error; // Re-throw the error to be handled by the caller
         }
     }
 
-    async signup(requestDto: SignupRequestDto): Promise<AuthResponseDto> {
+    async signup(createUserDto: CreateUserDto): Promise<AuthResponseDto> {
 
         try {
-            const userDto = await this.userService.getUserByEmail(requestDto.email);
-            if (userDto) {
-                throw new BadRequestException(`User already exists with email ${requestDto.email}`);
-            }
-            const userRepository = this.dataSource.getRepository(Users);
-            const newUser = userRepository.create();
+            const newUserDto = await this.userService.createUser(createUserDto);
 
-            newUser.email = requestDto.email;
-            newUser.firstName = requestDto.firstName;
-            newUser.lastName = requestDto.lastName;
-            newUser.password = requestDto.password;
-
-            const createdUser = await userRepository.save(newUser);
-            const createdUserDto = plainToInstance(UserDto, createdUser);
-            const authToken = await this.generateAuthToken(createdUserDto);
+            const authToken = await this.generateAuthToken(newUserDto);
             return plainToInstance(AuthResponseDto, {
                 authToken,
-                user: createdUserDto,
+                user: newUserDto,
 
             },
             );

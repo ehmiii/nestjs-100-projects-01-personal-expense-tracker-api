@@ -11,6 +11,7 @@ export class UserSubscriber implements EntitySubscriberInterface<Users> {
     async beforeInsert(event: InsertEvent<Users>) {
         console.log(`BEFORE USER INSERTED: `, event.entity);
         // Convert password to hash
+        event.entity.email = event.entity.email.toLowerCase();
         event.entity.password = await bcrypt.hash(event.entity.password, 12);
 
     }

@@ -7,8 +7,10 @@ import { UserSubscriber } from './user.subscriber';
 import { Users } from './users.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Users, UserSubscriber])], // Add your User entity here
+    // imports: [Users],
+    imports: [TypeOrmModule.forFeature([Users, UserSubscriber])],
     controllers: [UserController],
     providers: [UserService, UserSubscriber],
+    exports: [UserService, UserSubscriber]
 })
 export class UserModule { }

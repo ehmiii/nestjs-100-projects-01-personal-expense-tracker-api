@@ -17,17 +17,34 @@ export class Users {
     @DeleteDateColumn()
     deletedAt?: Date;
 
-    @Column()
+    @Column({
+        type: 'varchar',
+        length: 100,
+        nullable: false,
+    })
     firstName: string;
 
-    @Column()
+    @Column({
+        type: 'varchar',
+        length: 100,
+        nullable: false,
+    })
     lastName: string
 
-    @Column({ unique: true })
+    @Column({
+        type: 'varchar',
+        unique: true,
+        length: 100,
+        nullable: false,
+    })
     email: string;
 
-    @Column()
-    @Exclude({ toPlainOnly: true }) // Exclude password from serialization
+
+    @Column({
+        type: 'varchar',
+        length: 100,
+        nullable: false,
+    })
     password: string;
 
     @OneToMany(() => Expense, (expense) => expense.user)

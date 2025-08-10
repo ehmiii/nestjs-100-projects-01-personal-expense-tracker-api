@@ -1,8 +1,8 @@
-import { IsString, Matches, IsEmail, MinLength, IsNotEmpty } from 'class-validator';
-import { Exclude, Expose } from 'class-transformer';
-import { Match } from '../../utils/match.decorator';
+import { Expose, Exclude } from "class-transformer";
+import { IsString, IsNotEmpty, Matches, IsEmail, MinLength } from "class-validator";
+import { Match } from "../../utils/match.decorator";
 
-export class SignupRequestDto {
+export class CreateUserDto {
     @Expose()
     @IsString({ message: "Name should be string" })
     @IsNotEmpty()
