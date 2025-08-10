@@ -14,8 +14,8 @@ async function bootstrap() {
     transform: true,
   }));
   const PORT = app.get(ConfigService).get<string>(Constants.PORT);
-  await app.listen(PORT ?? 3000, () => {
-    console.log(`Server is running on http://localhost:${PORT}`)
+  await app.listen(PORT ?? 3000, async () => {
+    console.log(`Server is running on ${await app.getUrl()}`)
   });
 }
 bootstrap();

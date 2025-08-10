@@ -24,7 +24,7 @@ import { UserSubscriber } from './user/user.subscriber';
         useFactory: (configService: ConfigService) => ({
           type: 'postgres',
           url: configService.get<string>(Constants.DATABASE_URL),
-          entities: [Users, Expense],
+          // entities: [Users, Expense],
           subscribers: [UserSubscriber],
           autoLoadEntities: true,
           synchronize: true,
