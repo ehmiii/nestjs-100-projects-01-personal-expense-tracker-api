@@ -20,6 +20,6 @@ jobs:
 
       # Deploy to Railway
       - name: Deploy to Railway
-        run: railway up --service Expenses-Tracker
+        run: railway up --service nestjs-personal-expense-tracker
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
